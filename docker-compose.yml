@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  php:
+    build: ./infra/php
+    volumes:
+      - ./src:/var/task:ro
+    environment:
+      HANDLER: public/index.php
+      DOCUMENT_ROOT: public
+  web:
+    image: bref/fpm-dev-gateway
+    ports:
+      - '8080:80'
+    volumes:
+      - ./src:/var/task
+    depends_on:
+      - php
