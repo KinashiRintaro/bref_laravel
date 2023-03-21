@@ -1,11 +1,57 @@
 # 経緯
 
-一度はLaravelの表示、マイグレーションまでできていたものの、
-以下のリポジトリではLaravelの表示さえできなくなってしまいました。。
+以下はLaravel10の表示、マイグレーションまでできていたリポジトリです。
 [https://github.com/KinashiRintaro/Laravel10_bref](https://github.com/KinashiRintaro/Laravel10_bref)
 
+makefileを試すために一旦上記ディレクトリを削除→再度cloneを試したのですが、
+上記のリポジトリではLaravelの表示さえできなくなってしまいました。。
+
+<details>
+<summary>詳細</summary>
+
+phpコンテナが立ち上がらなくなってしまいました。
+以前は以下の書き方で動いたのですが
+```
+  php:
+    build: ./infra/php
+    volumes:
+      - ./src:/var/task:ro
+  web:
+    image: bref/fpm-dev-gateway
+    ports:
+      - '8080:80'
+    volumes:
+      - ./src:/var/task
+    depends_on:
+      - php
+    environment:
+      HANDLER: public/index.php
+      DOCUMENT_ROOT: public
+```
+
+HANDLERを設定する箇所がphpコンテナに無いと怒られるようになってしまいました。
+```
+  php:
+    build: ./infra/php
+    volumes:
+      - ./src:/var/task:ro
+    environment:
+      HANDLER: public/index.php
+      DOCUMENT_ROOT: public
+  web:
+    image: bref/fpm-dev-gateway
+    ports:
+      - '8080:80'
+    volumes:
+      - ./src:/var/task
+    depends_on:
+      - php
+```
+
+</details>
+
 よって本リポジトリで、最小構成にてやり直してみたのですが、htmlの表示ができない段階で躓いております。。
-（上記リポジトリで試した際は`index.html`も`phpinfo.php`も動作できておりました。）
+（削除前に上記リポジトリで試した際は`index.html`も`phpinfo.php`も動作できておりました。）
 
 ```
 // コンテナを起動
